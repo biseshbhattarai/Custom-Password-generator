@@ -1,6 +1,8 @@
 import random
 
 
+
+
 def password(header):
     print('Given password :', header)
     headers = []
@@ -26,12 +28,19 @@ def password(header):
     b = ''
     try:
         final_password[j] = final_password[j].upper()
-        final_password[k] = final_password[k].upper()
-        final_password[m] = final_password[m].upper()
     except Exception:
         final_password[j+1] = final_password[j+1].upper()
+    try:
+        final_password[k] = final_password[k].upper()
+    except Exception:
         final_password[k+1] = final_password[k+1].upper()
+    try:
+        final_password[m] = final_password[m].upper()
+    except Exception:
         final_password[m+1] = final_password[m+1].upper()
+
+
+      
         
     for i in password:
         a += i
