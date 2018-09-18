@@ -1,9 +1,20 @@
 import random
+from peewee import *
+import sys
+
+db = SqliteDatabase('password.db')
+
+class BaseModel(Model):
+    class Meta:
+        database = db
+
+class Password(BaseModel):
+    password = CharField(unique=True)
+    username = CharField()
+    services = CharField()     
 
 
-
-
-def password(header):
+def password(header, username, service):
     print('Given password :', header)
     headers = []
     keywords  = ['@', '$', '!', '%', '^', '&', '*']
@@ -16,7 +27,6 @@ def password(header):
     second = headers[j:k]
     third = headers[k:]
     password = first  + rand_cha[0:1] +  second + rand_cha[1:] + third
-    # print(password)
     l = random.randint(0, 3)
     m = random.randint(2, 6)
     final_first = password[0:l]
@@ -38,17 +48,31 @@ def password(header):
         final_password[m] = final_password[m].upper()
     except Exception:
         final_password[m+1] = final_password[m+1].upper()
-
-
-      
-        
     for i in password:
         a += i
     for i in final_password:
         b += str(i)
-    print('Password generated : ', b)
+    print("Generated Password : ", b)
+    ques_2 = input("Save to database (y/n) : ")
+    if ques_2 == 'y':
+        db.connect()
+        db.create_tables([Password])
+        db_pass = Password.create(password=b, username=username, services=service)   
+    else:
+        sys.exit()
    
+def retrieve_db(username):
+    db_output = Password.get(Password.username == username)
+    print(db_output.services + ' ' +'--->' + ' ' +db_output.password)
 
-password("Iamapassword") # Give the initil plain password here.
-# Converts something like this (Iamacoder) to ----> (I$1am5ac!oder)
-# Hashes update are coming soon......
+username = input("Enter your name : ")
+
+ques = input("What will you do generate password or retrive it : (g/r) : ")
+if ques == 'g':
+    service = input("To what service will you assign this password : ")
+    password("Iamacoder", username , service)
+   
+elif ques == 'r':
+    retrieve_db(username)
+
+
